@@ -77,7 +77,15 @@ export default function WorkoutCard({
             }}
           >
             <span>
-              {activeMuscleGroup === 'Mobility' ? 'CARDIO' : activeMuscleGroup.toUpperCase()}
+              {{
+                PushA: 'PUSH A',
+                PullA: 'PULL A',
+                CardioCore: 'CARDIO+CORE',
+                PushB: 'PUSH B',
+                PullB: 'PULL B',
+                Legs: 'LEGS',
+                Rest: 'REST'
+              }[activeMuscleGroup] || activeMuscleGroup.toUpperCase()}
             </span>
             <ChevronDown size={14} strokeWidth={1.5} style={{ color: 'var(--text-sub)' }} />
           </button>
@@ -85,11 +93,13 @@ export default function WorkoutCard({
           {isDropdownOpen && (
             <div className="custom-select-options">
               {[
-                { value: 'Pull', label: 'PULL' },
-                { value: 'Push', label: 'PUSH' },
-                { value: 'Legs', label: 'LEGS' },
-                { value: 'Core', label: 'CORE' },
-                { value: 'Mobility', label: 'CARDIO' }
+                { value: 'PushA',      label: 'PUSH A' },
+                { value: 'PullA',      label: 'PULL A' },
+                { value: 'CardioCore', label: 'CARDIO + CORE' },
+                { value: 'PushB',      label: 'PUSH B' },
+                { value: 'PullB',      label: 'PULL B' },
+                { value: 'Legs',       label: 'LEGS' },
+                { value: 'Rest',       label: 'REST DAY' },
               ].map((opt) => (
                 <button
                   key={opt.value}

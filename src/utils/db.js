@@ -195,23 +195,22 @@ export const db = {
   },
 
   // Suggest next workout in sequence
-  // Loop cycle: Pull (Back/Biceps) -> Push (Chest/Shoulders/Triceps) -> Legs (Glutes/Hamstrings) -> Core/Shoulders -> Full Body/Mobility
+  // Cycle: PushA → PullA → CardioCore → PushB → PullB → Legs → Rest → repeat
   getRecommendation() {
     const logs = this.getWorkoutLogs();
     if (logs.length === 0) {
-      return 'Pull'; // Start with Pull to immediately target upper back alignment
+      return 'PushA'; // Start with Push A
     }
 
-    // Get the most recent completed muscle group
-    // Sort logs descending
+    // Sort logs descending, find most recent
     const sorted = [...logs].sort((a, b) => b.timestamp - a.timestamp);
     const lastCompleted = sorted[0].muscleGroup;
 
-    const cycle = ['Pull', 'Push', 'Legs', 'Core', 'Mobility'];
+    const cycle = ['PushA', 'PullA', 'CardioCore', 'PushB', 'PullB', 'Legs', 'Rest'];
     const lastIndex = cycle.indexOf(lastCompleted);
 
     if (lastIndex === -1) {
-      return 'Pull'; // Fallback
+      return 'PushA'; // Fallback
     }
 
     const nextIndex = (lastIndex + 1) % cycle.length;
