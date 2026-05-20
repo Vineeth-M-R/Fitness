@@ -45,6 +45,7 @@ body {
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -75,6 +76,7 @@ h1, h2, h3, h4, h5, h6 {
 .app-container {
   width: 100%;
   max-width: 480px;
+  min-width: 0;
   min-height: 100vh;
   background-color: var(--bg);
   border-left: 1px solid var(--border);
@@ -82,8 +84,10 @@ h1, h2, h3, h4, h5, h6 {
   padding: 24px 16px 88px 16px; /* extra bottom padding for 56px sticky nav */
   display: flex;
   flex-direction: column;
-  gap: 32px; /* standard section gaps */
-  position: relative;
+  gap: 32px;
+  /* Prevent width shifts from content changes */
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 /* App Header */
@@ -376,8 +380,9 @@ h1, h2, h3, h4, h5, h6 {
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 100%;
   max-width: 480px;
   height: 56px;
@@ -386,7 +391,11 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 50;
+  z-index: 100;
+  /* Hardware-accelerate for smooth rendering */
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .nav-tab {
@@ -401,7 +410,11 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   width: 80px;
   cursor: pointer;
-  transition: var(--transition-fast);
+  /* Instant response — no transition lag on nav */
+  transition: color 0.1s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .nav-tab svg {
@@ -495,7 +508,10 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 48px;
   border-bottom: 1px solid var(--border);
   background: transparent;
-  transition: var(--transition-fast);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background 0.1s ease;
 }
 
 .exercise-item.completed {
@@ -510,57 +526,28 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
 }
 
-/* Custom Checkbox */
-.chk-container {
-  display: block;
-  position: relative;
+/* Decorative Checkbox (click handled by parent row) */
+.chk-box {
+  display: inline-block;
+  flex-shrink: 0;
   width: 18px;
   height: 18px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.chk-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 18px;
-  width: 18px;
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: 2px;
-  transition: var(--transition-fast);
+  position: relative;
+  transition: background 0.1s ease, border-color 0.1s ease;
 }
 
-.chk-container:hover input ~ .checkmark {
-  border-color: var(--accent);
-}
-
-.chk-container input:checked ~ .checkmark {
+.chk-box.chk-checked {
   background-color: var(--accent);
   border-color: var(--accent);
 }
 
-.checkmark:after {
-  content: "";
+.chk-box.chk-checked::after {
+  content: '';
   position: absolute;
-  display: none;
-}
-
-.chk-container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-.chk-container .checkmark:after {
-  left: 6px;
+  left: 5px;
   top: 2px;
   width: 4px;
   height: 9px;
@@ -816,26 +803,30 @@ h1, h2, h3, h4, h5, h6 {
 .custom-select-options {
   position: absolute;
   top: 36px;
-  right: 0;
-  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent);
   display: flex;
   flex-direction: column;
-  min-width: 120px;
+  min-width: 140px;
 }
 
 .custom-select-option {
-  padding: 8px 12px;
-  font-size: var(--text-xs);
+  padding: 10px 16px;
+  font-size: var(--text-sm);
   font-family: var(--font-body);
-  text-align: left;
+  text-align: center;
   background: transparent;
   border: none;
   color: var(--text);
   cursor: pointer;
   width: 100%;
-  transition: background 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background 0.1s ease, color 0.1s ease;
 }
 
 .custom-select-option:hover {

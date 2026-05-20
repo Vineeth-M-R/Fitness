@@ -132,22 +132,20 @@ export default function WorkoutCard({
 
         <div className="exercise-list">
           {workout.exercises.map((ex) => (
-            <div key={ex.id} className={`exercise-item ${checkedItems[ex.id] ? 'completed' : ''}`}>
+            <div
+              key={ex.id}
+              className={`exercise-item ${checkedItems[ex.id] ? 'completed' : ''}`}
+              onClick={() => handleCheckChange(ex.id)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="exercise-left">
-                <label className="chk-container">
-                  <input
-                    type="checkbox"
-                    checked={!!checkedItems[ex.id]}
-                    onChange={() => handleCheckChange(ex.id)}
-                  />
-                  <span className="checkmark"></span>
-                </label>
+                {/* Visual checkbox — purely decorative, click handled by parent row */}
+                <span className={`chk-box ${checkedItems[ex.id] ? 'chk-checked' : ''}`} />
 
                 <div className="exercise-details">
                   <span className="exercise-name">{ex.name}</span>
                   <div className="exercise-meta">
                     <span style={{ fontFamily: 'var(--font-body)' }}>{ex.sets} × {ex.reps}</span>
-                    <span style={{ color: 'var(--border)' }}>•</span>
                   </div>
                 </div>
               </div>
@@ -155,8 +153,8 @@ export default function WorkoutCard({
               {/* View Form Guide Button */}
               <button
                 className="btn-icon-only"
-                onClick={() => setSelectedExerciseForGuide(ex)}
-                title="View form guide and position safety guide"
+                onClick={(e) => { e.stopPropagation(); setSelectedExerciseForGuide(ex); }}
+                title="View form guide"
               >
                 <Eye size={16} strokeWidth={1.5} style={{ color: 'var(--accent)' }} />
               </button>
