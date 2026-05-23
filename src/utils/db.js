@@ -112,13 +112,6 @@ export const db = {
     localStorage.setItem(KEYS.CALORIE_LOGS, JSON.stringify(logs));
   },
 
-  resetTodayCalories(dateStr = getLocalDateString()) {
-    const logs = this.getCalorieLogs();
-    logs[dateStr] = { food: 0, extra: 0, items: [] };
-    this.saveCalorieLogs(logs);
-    return logs[dateStr];
-  },
-
   addCalorieLog(dateStr, type, amount, note = '') {
     const logs = this.getCalorieLogs();
     if (!logs[dateStr]) {
@@ -217,65 +210,5 @@ export const db = {
     return cycle[nextIndex];
   },
 
-  // Clear data
-  clearAll() {
-    localStorage.removeItem(KEYS.PROFILE);
-    localStorage.removeItem(KEYS.WORKOUT_LOGS);
-    localStorage.removeItem(KEYS.CALORIE_LOGS);
-  },
-
-  // Seed mock data
-  seedMockData() {
-    this.clearAll();
-    this.saveProfile(DEFAULT_PROFILE);
-
-    const monday = getMondayOfCurrentWeek();
-    const mondayStr = getLocalDateString(monday);
-
-    const tuesday = new Date(monday);
-    tuesday.setDate(monday.getDate() + 1);
-    const tuesdayStr = getLocalDateString(tuesday);
-
-    const wednesday = new Date(monday);
-    wednesday.setDate(monday.getDate() + 2);
-    const wednesdayStr = getLocalDateString(wednesday);
-
-    // Seed Monday: Workout (Pull) completed, logged food & extra active calories
-    this.addWorkoutLog({
-      date: mondayStr,
-      timestamp: monday.getTime() + 18 * 60 * 60 * 1000, // 6 PM
-      muscleGroup: 'Pull',
-      caloriesBurnt: 380,
-      exercises: [
-        { name: 'Single-Arm Dumbbell Rows', setsCompleted: 3, reps: '10-12' },
-        { name: 'Lat Pulldowns', setsCompleted: 3, reps: '10-12' },
-        { name: 'Face Pulls', setsCompleted: 3, reps: '15' },
-        { name: 'Bicep Hammer Curls', setsCompleted: 3, reps: '12' }
-      ]
-    });
-    // Add Monday calories (2000 kcal eaten, 100 kcal extra steps + 380 kcal workout is auto-added)
-    this.addCalorieLog(mondayStr, 'food', 2020, 'Healthy meals & protein shake');
-    this.addCalorieLog(mondayStr, 'extra', 120, '10k daily steps');
-
-    // Seed Tuesday: Workout (Push) completed, logged food
-    this.addWorkoutLog({
-      date: tuesdayStr,
-      timestamp: tuesday.getTime() + 18.5 * 60 * 60 * 1000, // 6:30 PM
-      muscleGroup: 'Push',
-      caloriesBurnt: 420,
-      exercises: [
-        { name: 'Incline Dumbbell Chest Press', setsCompleted: 3, reps: '10-12' },
-        { name: 'Dumbbell Shoulder Press', setsCompleted: 3, reps: '10' },
-        { name: 'Dumbbell Lateral Raises', setsCompleted: 3, reps: '12-15' },
-        { name: 'Tricep Overhead Extension', setsCompleted: 3, reps: '12' }
-      ]
-    });
-    // Add Tuesday calories (1950 kcal eaten, 80 kcal steps + 420 kcal workout is auto-added)
-    this.addCalorieLog(tuesdayStr, 'food', 1980, 'Low carb chicken rice & fruits');
-    this.addCalorieLog(tuesdayStr, 'extra', 90, 'Walked to meetings');
-
-    // Seed Wednesday (Today): Eaten so far (e.g. 1100 kcal)
-    this.addCalorieLog(wednesdayStr, 'food', 1150, 'Breakfast and light lunch');
-    this.addCalorieLog(wednesdayStr, 'extra', 50, 'Morning walk');
-  }
 };
+
