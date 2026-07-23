@@ -96,6 +96,9 @@ export const db = {
     logs.push(newLog);
     this.saveWorkoutLogs(logs);
 
+    // Auto mark attendance for this workout date
+    this.setAttendance(newLog.date, true);
+
     // Auto add workout calories to calorie logs
     if (workout.caloriesBurnt > 0) {
       this.addCalorieLog(newLog.date, 'extra', workout.caloriesBurnt, `Workout: ${workout.muscleGroup}`);
@@ -188,26 +191,57 @@ export const db = {
   },
 
   // Suggest next workout in sequence
-  // Cycle: PushA → PullA → CardioCore → PushB → PullB → Legs → Rest → repeat
+  // Cycle: Day1 → Day2 → Day3 → Day4 → Day5 → Day6 → Day7 → repeat
   getRecommendation() {
     const logs = this.getWorkoutLogs();
     if (logs.length === 0) {
-      return 'PushA'; // Start with Push A
+      return 'Day1'; // Start with Day 1
     }
 
     // Sort logs descending, find most recent
     const sorted = [...logs].sort((a, b) => b.timestamp - a.timestamp);
     const lastCompleted = sorted[0].muscleGroup;
 
-    const cycle = ['PushA', 'PullA', 'CardioCore', 'PushB', 'PullB', 'Legs', 'Rest'];
+    const cycle = ['Day1', 'Day2', 'Day3', 'Day4', 'Day5', 'Day6', 'Day7'];
     const lastIndex = cycle.indexOf(lastCompleted);
 
     if (lastIndex === -1) {
-      return 'PushA'; // Fallback
+      return 'Day1'; // Fallback
     }
 
     const nextIndex = (lastIndex + 1) % cycle.length;
     return cycle[nextIndex];
+  },
+
+  // Attendance management helpers
+  getAttendance() {
+    const raw = localStorage.getItem('vinfit_attendance');
+    return raw ? JSON.parse(raw) : {};
+  },
+
+  saveAttendance(attendance) {
+    localStorage.setItem('vinfit_attendance', JSON.stringify(attendance));
+  },
+
+  setAttendance(dateStr, status) {
+    const att = this.getAttendance();
+    if (status) {
+      att[dateStr] = true;
+    } else {
+      delete att[dateStr];
+    }
+    this.saveAttendance(att);
+  },
+
+  toggleAttendance(dateStr) {
+    const att = this.getAttendance();
+    if (att[dateStr]) {
+      delete att[dateStr];
+    } else {
+      att[dateStr] = true;
+    }
+    this.saveAttendance(att);
+    return att;
   },
 
 };

@@ -78,13 +78,13 @@ export default function WorkoutCard({
           >
             <span>
               {{
-                PushA: 'PUSH A',
-                PullA: 'PULL A',
-                CardioCore: 'CARDIO+CORE',
-                PushB: 'PUSH B',
-                PullB: 'PULL B',
-                Legs: 'LEGS',
-                Rest: 'REST'
+                Day1: 'DAY 1: UPPER (PULL)',
+                Day2: 'DAY 2: LOWER',
+                Day3: 'DAY 3: CARDIO & FLEX',
+                Day4: 'DAY 4: UPPER (PUSH)',
+                Day5: 'DAY 5: LOWER/FULL',
+                Day6: 'DAY 6: CARDIO & FLEX',
+                Day7: 'DAY 7: REST'
               }[activeMuscleGroup] || activeMuscleGroup.toUpperCase()}
             </span>
             <ChevronDown size={14} strokeWidth={1.5} style={{ color: 'var(--text-sub)' }} />
@@ -93,13 +93,13 @@ export default function WorkoutCard({
           {isDropdownOpen && (
             <div className="custom-select-options">
               {[
-                { value: 'PushA',      label: 'PUSH A' },
-                { value: 'PullA',      label: 'PULL A' },
-                { value: 'CardioCore', label: 'CARDIO + CORE' },
-                { value: 'PushB',      label: 'PUSH B' },
-                { value: 'PullB',      label: 'PULL B' },
-                { value: 'Legs',       label: 'LEGS' },
-                { value: 'Rest',       label: 'REST DAY' },
+                { value: 'Day1', label: 'DAY 1: UPPER (PULL)' },
+                { value: 'Day2', label: 'DAY 2: LOWER' },
+                { value: 'Day3', label: 'DAY 3: CARDIO & FLEX' },
+                { value: 'Day4', label: 'DAY 4: UPPER (PUSH)' },
+                { value: 'Day5', label: 'DAY 5: LOWER/FULL' },
+                { value: 'Day6', label: 'DAY 6: CARDIO & FLEX' },
+                { value: 'Day7', label: 'DAY 7: REST' },
               ].map((opt) => (
                 <button
                   key={opt.value}

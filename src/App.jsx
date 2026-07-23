@@ -5,6 +5,7 @@ import { db, getCalorieTargets, getLocalDateString } from './utils/db';
 import WorkoutCard from './components/WorkoutCard';
 import CalorieTracker from './components/CalorieTracker';
 import HistoryPanel from './components/HistoryPanel';
+import AttendanceTracker from './components/AttendanceTracker';
 
 export default function App() {
   const [profile, setProfile] = useState(() => db.getProfile());
@@ -18,6 +19,7 @@ export default function App() {
     return db.getWorkoutLogs();
   });
   const [calorieLogs, setCalorieLogs] = useState(() => db.getCalorieLogs());
+  const [attendance, setAttendance] = useState(() => db.getAttendance());
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'history'
 
   const [recommendedMuscleGroup, setRecommendedMuscleGroup] = useState(() => db.getRecommendation());
@@ -69,6 +71,10 @@ export default function App() {
     setShowLogModal(false);
   };
 
+  const handleToggleAttendance = (dateStr) => {
+    const updated = db.toggleAttendance(dateStr);
+    setAttendance(updated);
+  };
 
   const handleCompleteWorkout = (workoutData) => {
     db.addWorkoutLog(workoutData);
@@ -76,6 +82,7 @@ export default function App() {
     // Update state to force recalculations
     setWorkoutLogs(db.getWorkoutLogs());
     setCalorieLogs(db.getCalorieLogs());
+    setAttendance(db.getAttendance());
 
     // Automatically switch to history tab so they see it logged
     setActiveTab('history');
@@ -116,22 +123,31 @@ export default function App() {
       <main>
         {activeTab === 'dashboard' && (
           <div className="dashboard-grid">
-            {/* Calorie Progress Ring & Goal Bar */}
-            <CalorieTracker
-              profile={profile}
-              targets={targets}
-              weeklyStats={weeklyStats}
-              todayStats={todayStats}
-            />
-
-            <div style={{ height: '32px' }} />
-
             {/* Daily Active Workout Panel */}
             <WorkoutCard
               recommendedMuscleGroup={recommendedMuscleGroup}
               activeMuscleGroup={activeMuscleGroup}
               setActiveMuscleGroup={setActiveMuscleGroup}
               onCompleteWorkout={handleCompleteWorkout}
+            />
+
+            <div style={{ height: '32px' }} />
+
+            {/* Attendance & Consistency Tracker */}
+            <AttendanceTracker
+              workoutLogs={workoutLogs}
+              attendance={attendance}
+              onToggleAttendance={handleToggleAttendance}
+            />
+
+            <div style={{ height: '32px' }} />
+
+            {/* Calorie Progress Ring & Goal Bar */}
+            <CalorieTracker
+              profile={profile}
+              targets={targets}
+              weeklyStats={weeklyStats}
+              todayStats={todayStats}
             />
           </div>
         )}
